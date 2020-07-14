@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igeek.ch04.sql.UserMapper">
+
+    <!-- sql片段：提供动态sql的利用率，不使用where标签目的是使sql片段重用率高些 -->
+    <sql id="user_query">
+        <if test="userCustom != null">
+            <if test="userCustom.sex!=null and userCustom.sex!=''">
+                and sex = #{userCustom.sex}
+            </if>
+            <if test="userCustom.username!=null and userCustom.username!=''">
+                and username like concat('%',#{userCustom.username},'%')
+            </if>
+        </if>
+    </sql>
+
+    <sql id="user_query_id">
+        <if test="ids!=null">
+            <foreach collection="ids" item="id" open="and id in (" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </sql>
+
+    <!--
+        1.需求：通过用户性别和姓名查询用户列表 PS：不允许性别或者姓名为null或者空串
+        parameterType属性的类型是pojo类型：要求#{key}中的key必须与pojo中的属性名一致 OGNL表达式
+    -->
+    <select id="findList" parameterType="UserQueryVO" resultType="UserCustom">
+        select * from user
+        <!-- 通过where标签自动去除第一个and -->
+        <where>
+            <!-- 引入多个sql片段-->
+            <include refid="user_query"></include>
+        </where>
+    </select>
+
+    <!-- 2.需求：通过用户性别和姓名查询用户列表条数 PS：不允许性别或者姓名为null或者空串 -->
+    <select id="findCounts" parameterType="UserQueryVO" resultType="Integer">
+        select count(*) from user
+        <where>
+            <include refid="user_query"></include>
+        </where>
+    </select>
+
+    <!-- 3.需求：通过用户性别和姓名查询用户列表，且id值是15或20或25  PS：不允许性别或者姓名为null或者空串 -->
+    <select id="findListByIds" parameterType="UserQueryVO" resultType="UserCustom">
+        select * from user
+        <!-- 通过where标签自动去除第一个and -->
+        <where>
+            <!-- 引入多个sql片段-->
+            <include refid="user_query"></include>
+            <include refid="user_query_id"></include>
+        </where>
+    </select>
+
+
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id = #{id}
+    </delete>
+
+</mapper>

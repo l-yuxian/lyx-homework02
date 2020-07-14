@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：划分sql语句空间 -->
+<mapper namespace="com.igeek.ch03.mapper.UserMapper">
+
+    <!--
+        1.需求：通过id查询用户信息
+        1).查询 选择select标签
+        2).id属性  当前namespace下的唯一标识
+        3).parameterType属性  形成输入参数映射关系  简单类型（基本数据类型、String、包装器类型）、HashMap、pojo
+        4).resultType属性  形成输出结果映射关系  简单类型（基本数据类型、String、包装器类型）、HashMap、pojo
+    -->
+    <select id="findOne" parameterType="Integer" resultType="User">
+        select * from user where id = #{id}
+    </select>
+
+    <!-- 根据用户名进行模糊查询用户信息 resultType类型写的单一类型，例如若返回值是集合类型，则写集合的泛型类型即可 -->
+    <select id="findByName" parameterType="String" resultType="User">
+        select * from user where username like concat('%',#{name},'%')
+    </select>
+
+    <!-- 添加用户信息 parameterType类型是pojo类型时，要求#{key}中的key必须与pojo中的属性名称一致 -->
+    <insert id="insert" parameterType="User">
+        <!-- 获取插入用户的id -->
+        <selectKey keyProperty="id" resultType="Integer" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+
+        insert into user(username,sex,birthday,address) values(#{username},#{sex},#{birthday},#{address})
+    </insert>
+
+</mapper>
