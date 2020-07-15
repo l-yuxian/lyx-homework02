@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igeek.ch05.mm.UserItemsMapper">
+
+    <!-- 查询用户及用户购买商品信息  多对多映射关系 -->
+    <resultMap id="map" type="UserCustom">
+        <!-- 用户信息 -->
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="sex" property="sex" />
+        <result column="birthday" property="birthday" />
+        <result column="address" property="address" />
+
+        <!-- 一对多关联  订单信息 -->
+        <collection property="orderList" ofType="OrdersCustom" >
+            <id column="oid" property="id" />
+            <result column="id" property="userId" />
+            <result column="createtime" property="createtime" />
+            <result column="number" property="number" />
+            <result column="note" property="note" />
+
+            <!-- 一对多关联  订单明细信息 -->
+            <collection property="detailList" ofType="OrderdetailCustom">
+                <id column="did" property="id" />
+                <result column="oid" property="ordersId" />
+                <result column="iid" property="itemsId" />
+                <result column="items_num" property="itemsNum" />
+
+                <!-- 一对一关联  商品信息 -->
+                <association property="itemsCustom" javaType="ItemsCustom">
+                    <id column="iid" property="id" />
+                    <result column="name" property="name" />
+                    <result column="price" property="price" />
+                    <result column="detail" property="detail" />
+                    <result column="time" property="createtime" />
+                    <result column="pic" property="pic" />
+                </association>
+
+            </collection>
+
+        </collection>
+
+    </resultMap>
+
+
+    <select id="find" resultMap="map">
+        select u.* ,
+			 o.id oid , o.number , o.createtime , o.note ,
+			 d.id did , d.items_num ,
+			 i.id iid , i.name , i.pic , i.price , i.createtime time , i.detail
+        from user u , orders o , orderdetail d , items i
+        where u.id = o.user_id and o.id = d.orders_id and d.items_id = i.id
+    </select>
+
+</mapper>

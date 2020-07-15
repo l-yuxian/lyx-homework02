@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igeek.ch05.om.OrdersAndDetailMapper">
+
+    <resultMap id="map" type="OrdersCustom">
+        <!-- 订单信息 -->
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="createtime" property="createtime" />
+        <result column="number" property="number" />
+        <result column="note" property="note" />
+
+        <!--
+            一对多关联   订单详情信息
+            通过collection来完成一对多关联
+            property属性：指定的type类型中，一对多关联的属性名
+            ofType属性：指定的type类型中，一对多关联的属性的集合的泛型
+        -->
+        <collection property="detailList" ofType="OrderdetailCustom">
+            <id column="did" property="id" />
+            <result column="id" property="ordersId" />
+            <result column="items_id" property="itemsId" />
+            <result column="items_num" property="itemsNum" />
+        </collection>
+
+    </resultMap>
+
+    <!-- 查询订单及订单明细的信息 -->
+    <select id="find" resultMap="map">
+        select o.* , d.id did , d.items_id ,d.items_num
+        from orders o , orderdetail d
+        where o.id = d.orders_id
+    </select>
+
+</mapper>

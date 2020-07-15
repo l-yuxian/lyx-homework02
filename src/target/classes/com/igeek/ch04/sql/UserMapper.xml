@@ -56,15 +56,4 @@
         </where>
     </select>
 
-
-    <sql id="user_query_ids">
-        <if test="ids!=null">
-            <foreach collection="ids" item="id" open="and id in (" close=")" separator=",">
-                <if test="id == 15 or id == 20 or id == 25">
-                    #{id}
-                </if>
-            </foreach>
-        </if>
-    </sql>
-
 </mapper>

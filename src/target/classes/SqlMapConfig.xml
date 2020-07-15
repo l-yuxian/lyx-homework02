@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+       PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+        <!-- 加载属性文件  db.properties -->
+        <properties resource="db.properties"></properties>
+
+        <!-- 配置全局参数 -->
+        <!--<settings></settings>-->
+
+        <!-- 自定义别名:扫描指定包下的实体类，给这些类取别名，默认是它的类名或者类名首字母小写 -->
+        <typeAliases>
+            <package name="com.igeek.pojo"/>
+        </typeAliases>
+
+        <!-- 和spring整合后 environments配置将废除-->
+        <environments default="development">
+            <environment id="development">
+                <!-- 使用jdbc事务管理,事务控制由mybatis-->
+                <transactionManager type="JDBC" />
+                <!-- 数据库连接池，由mybatis管理，通过${}直接加载属性文件上的值-->
+                <dataSource type="POOLED">
+                    <property name="driver" value="${db.driverClass}" />
+                    <property name="url" value="${db.jdbcUrl}" />
+                    <property name="username" value="${db.username}" />
+                    <property name="password" value="${db.password}" />
+                </dataSource>
+            </environment>
+        </environments>
+
+
+        <!-- 批量加载mapper映射文件：指定mapper接口所在的包名，mybatis为其生成代理对象 -->
+        <mappers>
+            <package name="com.igeek.ch03.mapper" />
+            <package name="com.igeek.ch04.sql" />
+            <package name="com.igeek.ch05" />
+            <package name="com.igeek.ch06" />
+        </mappers>
+
+</configuration>

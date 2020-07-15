@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igeek.ch05.oo.OrdersUserMapper">
+
+    <!-- resultMap 完成高级映射关系，将属性一一映射 -->
+    <resultMap id="map" type="OrdersCustom">
+        <!--
+            订单信息
+            id 与表中的主键对应     result 与表中的普通字段对应
+            column属性 对应的是表中的字段名
+            property属性 对应的是type指定的类中的属性名
+        -->
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="createtime" property="createtime" />
+        <result column="number" property="number" />
+        <result column="note" property="note" />
+
+        <!--
+            一对一关联的用户信息
+            association完成一对一映射：
+            property属性：一对一关联的属性名
+            javaType属性：一对一关联的属性的类型
+        -->
+        <association property="userCustom" javaType="UserCustom">
+            <id column="user_id" property="id" />
+            <result column="username" property="username" />
+            <result column="sex" property="sex" />
+            <result column="birthday" property="birthday" />
+            <result column="address" property="address" />
+        </association>
+
+    </resultMap>
+
+
+    <!-- 查询订单信息，关联查询创建订单的用户信息 -->
+    <select id="find" resultMap="map">
+        select o.* , u.username , u.birthday , u.sex , u.address
+        from orders o , user u
+        where o.user_id = u.id
+    </select>
+
+</mapper>

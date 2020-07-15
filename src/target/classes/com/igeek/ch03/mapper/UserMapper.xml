@@ -31,15 +31,4 @@
         insert into user(username,sex,birthday,address) values(#{username},#{sex},#{birthday},#{address})
     </insert>
 
-    <!-- 根据提供的id删除用户 -->
-    <delete id="deleteone" parameterType="String">
-        delete from user where id = #{id}
-    </delete>
-
-    <!-- 根据提供的信息修改现有的用户信息 -->
-    <update id="updataInfo" parameterType="String">
-        update user set username=#{username},sex=#{sex},birthday=#{brithday},address=#{address} WHERE id=#{id};
-    </update>
-
-
 </mapper>
